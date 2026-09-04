@@ -1,5 +1,5 @@
-import {ILocationProvider, IModule, ISCEProvider, IScope, ITimeoutService} from 'angular';
-import {StateService, StateParams, UrlRouterProvider} from 'angular-ui-router';
+import {ILocationProvider, IModule, ISCEProvider, IScope} from 'angular';
+import {StateParams, UrlRouterProvider} from 'angular-ui-router';
 import {HomeController} from '@src/Module/Controllers/HomeController';
 import {AppDirective} from '@src/Module/Directives/AppDirective';
 import {ItemController} from '@src/Module/Controllers/ItemController';
@@ -51,10 +51,7 @@ export class AppModule
 		this.app.config([
 			'$locationProvider', '$stateProvider', '$urlRouterProvider', '$sceProvider',
 			($locationProvider: ILocationProvider, $stateProvider: IAppStateProvider, $urlRouterProvider: UrlRouterProvider, $sceProvider: ISCEProvider) => {
-			$locationProvider.html5Mode({
-				enabled: true,
-				requireBase: false,
-			}).hashPrefix('!');
+			$locationProvider.html5Mode(false).hashPrefix('!');
 
 			$sceProvider.enabled(false);
 			const appStates: IAppState[] = [
@@ -346,38 +343,12 @@ export class AppModule
 				});
 			},
 		]);
-		this.app.run(['$transitions', '$rootScope', '$state', '$timeout', ($transitions: any, $rootScope: any, $state: StateService, $timeout: ITimeoutService) => {
+		this.app.run(['$transitions', '$rootScope', ($transitions: any, $rootScope: any) => {
 			$rootScope.aprilMode = April.isApril();
 			$rootScope.aprilModePossible = April.isAprilPossible();
 
-			const path = document.location.pathname;
-			let v = '0.8';
-			if (path.indexOf('/1.0-ficsmas') !== -1) {
-				v = '1.0-ficsmas';
-			} else if (path === '/' || path.indexOf('/1.0') !== -1) {
-				v = '1.0';
-			}
-			$rootScope.version = v;
-			DataProvider.change(v);
-
-			$rootScope.changeVersion = (ver: string) => {
-				document.location.href = document.location.href.replace($rootScope.version, ver);
-			};
-
-			$transitions.onStart({}, (transition: ITransitionObject<{version: string, share?: string}>) => {
-				const version = transition.params().version;
-				const valid = ['0.8', '1.0', '1.0-ficsmas'];
-
-				let defaultVersion = '0.8';
-				if (transition.to().name === 'home') {
-					defaultVersion = '1.0';
-				}
-
-				if (!valid.includes(version)) {
-					transition.abort();
-					$state.go(transition.to().name + '', {...transition.params(), version: defaultVersion}, {location: 'replace', reload: true, inherit: true});
-				}
-			})
+			$rootScope.version = '1.0';
+			DataProvider.change('1.0');
 
 			$transitions.onFinish({}, () => {
 				const elements = document.getElementsByClassName('tooltip');
@@ -386,18 +357,7 @@ export class AppModule
 						elements[index].remove();
 					}
 				}
-				setTimeout(() => {
-					$rootScope.version = $state.params.version;
-					DataProvider.change($state.params.version);
-				});
 			});
-
-			$timeout(() => {
-				$('#modal').modal({
-					backdrop: 'static',
-					keyboard: false,
-				});
-			})
 		}]);
 
 		this.app.filter('number', () => {
