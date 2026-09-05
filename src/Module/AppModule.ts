@@ -109,11 +109,18 @@ export class AppModule
 				},
 				{
 					name: 'home',
-					url: '/home',
+					url: '/',
 					ncyBreadcrumb: {
 						label: 'Satisfactory Tools',
 					},
 					parent: 'listing',
+					onEnter: ['$transition$', '$state', ($transition$: any, $state: any) => {
+						// Redirect to the production calculator only on initial app load,
+						// so the landing page remains reachable via the Home menu link.
+						if ($transition$.from().name === '') {
+							$state.go('production');
+						}
+					}],
 					views: {
 						'content@listing': {
 							controller: 'HomeController',
@@ -315,7 +322,7 @@ export class AppModule
 				},
 				{
 					name: 'production',
-					url: '/',
+					url: '/production',
 					parent: 'listing',
 					ncyBreadcrumb: {
 						label: 'Production',
