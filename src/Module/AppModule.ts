@@ -109,7 +109,7 @@ export class AppModule
 				},
 				{
 					name: 'home',
-					url: '/',
+					url: '/home',
 					ncyBreadcrumb: {
 						label: 'Satisfactory Tools',
 					},
@@ -315,7 +315,7 @@ export class AppModule
 				},
 				{
 					name: 'production',
-					url: '/production',
+					url: '/',
 					parent: 'listing',
 					ncyBreadcrumb: {
 						label: 'Production',
@@ -390,12 +390,12 @@ export class AppModule
 				link: (scope: IScope, element: any, attrs: any) => {
 					element = $(element);
 					element.data('boundary', 'window');
-					element.on('mouseenter', () => {
+					element.on('mouseenter', function() {
 						element.tooltip('_fixTitle')
 							.tooltip('show');
-					}).on('mouseleave', () => {
+					}).on('mouseleave', function() {
 						element.tooltip('hide');
-					}).on('click', () => {
+					}).on('click', function() {
 						element.tooltip('hide');
 					});
 				},
