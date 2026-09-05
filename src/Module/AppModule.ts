@@ -114,13 +114,6 @@ export class AppModule
 						label: 'Satisfactory Tools',
 					},
 					parent: 'listing',
-					onEnter: ['$transition$', '$state', ($transition$: any, $state: any) => {
-						// Redirect to the production calculator only on initial app load,
-						// so the landing page remains reachable via the Home menu link.
-						if ($transition$.from().name === '') {
-							$state.go('production');
-						}
-					}],
 					views: {
 						'content@listing': {
 							controller: 'HomeController',
@@ -340,6 +333,11 @@ export class AppModule
 			appStates.forEach((state) => {
 				$stateProvider.state(state);
 			});
+
+			// Start the app on the production calculator: any unmatched URL
+			// (including the initial empty URL on first load) goes there.
+			// The landing page remains reachable via the Home menu link.
+			$urlRouterProvider.otherwise('/production');
 		}]);
 		this.app.config([
 			'$breadcrumbProvider',
