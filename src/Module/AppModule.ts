@@ -390,12 +390,12 @@ export class AppModule
 				link: (scope: IScope, element: any, attrs: any) => {
 					element = $(element);
 					element.data('boundary', 'window');
-					element.on('mouseenter', function() {
+					element.on('mouseenter', () => {
 						element.tooltip('_fixTitle')
 							.tooltip('show');
-					}).on('mouseleave', function() {
+					}).on('mouseleave', () => {
 						element.tooltip('hide');
-					}).on('click', function() {
+					}).on('click', () => {
 						element.tooltip('hide');
 					});
 				},
